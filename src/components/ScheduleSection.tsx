@@ -6,7 +6,7 @@ const scheduleData = {
   day1: {
     date: "March 10, 2026",
     events: [
-      { time: "09:00 ONWARDS", title: "Kit Distribution" },
+      { time: "09:00 ONWARDS", title: "Kit Distribution", type: "logistics" },
       { time: "10:00 – 10:30", title: "Inaugural Ceremony & Keynote", type: "Keynote" },
       { time: "10:30 – 11:45", title: "SESSION 1", type: "Technical Session" },
       { time: "11:45 – 12:00", title: "Tea Break", type: "Break" },
@@ -15,7 +15,6 @@ const scheduleData = {
       { time: "14:30 – 15:45", title: "SESSION 3", type: "Technical Session" },
       { time: "15:45 – 16:00", title: "TEA BREAK", type: "Break" },
       { time: "16:00 – 17:15", title: "SESSION 4", type: "Technical Session" },
-
     ],
   },
   day2: {
@@ -35,11 +34,11 @@ const scheduleData = {
 };
 
 const typeColors: Record<string, string> = {
-  keynote: "bg-primary/20 text-primary",
-  session: "bg-violet-mid/60 text-foreground",
-  workshop: "bg-primary/10 text-primary",
-  break: "bg-muted/30 text-muted-foreground",
-  logistics: "bg-secondary text-secondary-foreground",
+  Keynote: "bg-amber-400/15 text-amber-400",
+  "Technical Session": "bg-primary/15 text-primary",
+  Break: "bg-muted/40 text-muted-foreground",
+  logistics: "bg-emerald-400/15 text-emerald-400",
+  General: "bg-violet-400/15 text-violet-400",
 };
 
 const ScheduleSection = () => {
@@ -73,8 +72,8 @@ const ScheduleSection = () => {
               key={day}
               onClick={() => setActiveDay(day)}
               className={`clip-btn px-8 py-3 font-heading font-bold text-sm uppercase tracking-widest transition-all duration-300 ${activeDay === day
-                ? "bg-primary text-primary-foreground shadow-[var(--shadow-gold)]"
-                : "border border-primary/30 text-foreground hover:border-primary/60"
+                  ? "bg-primary text-primary-foreground shadow-[var(--shadow-gold)]"
+                  : "border border-primary/30 text-foreground hover:border-primary/60"
                 }`}
             >
               {day === "day1" ? "Day 1" : "Day 2"}
@@ -107,7 +106,7 @@ const ScheduleSection = () => {
               <div className="flex-1">
                 <h4 className="font-heading text-sm font-bold">{event.title}</h4>
               </div>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider ${typeColors[event.type]}`}>
+              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider ${typeColors[event.type] ?? "bg-muted/30 text-muted-foreground"}`}>
                 {event.type}
               </span>
             </motion.div>

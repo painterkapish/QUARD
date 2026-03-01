@@ -49,7 +49,7 @@ const HeroSection = () => {
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 30 }} 
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-mono text-xs md:text-sm text-muted-foreground tracking-[0.2em] uppercase mb-8"
