@@ -54,7 +54,7 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-mono text-xs md:text-sm text-muted-foreground tracking-[0.2em] uppercase mb-8"
         >
-          Quantum Utilization of AI Responses & Dynamics Devices
+          Quantum Understanding & Analysis with Real-world Data Driven
         </motion.p>
 
         <motion.div
@@ -98,10 +98,10 @@ const HeroSection = () => {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {[
-            { value: "8", label: "Tracks" },
-            { value: "6+", label: "Speakers" },
+            { value: "9", label: "Tracks" },
             { value: "2", label: "Days" },
-            { value: "500+", label: "Seats" },
+            { value: "9", label: "Speakers" },
+            { value: "30", label: "Seats" },
           ].map((stat) => (
             <div key={stat.label} className="stat-card rounded-lg px-6 py-4 text-center">
               <div className="text-2xl md:text-3xl font-heading font-extrabold text-primary">

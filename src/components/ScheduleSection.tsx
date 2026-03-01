@@ -1,42 +1,44 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Clock, MapPin } from "lucide-react";
+import { Clock } from "lucide-react";
 
 const scheduleData = {
   day1: {
     date: "March 10, 2026",
     events: [
-      { time: "08:30 – 09:30", title: "Registration & Kit Collection", venue: "Main Hall", type: "logistics" },
-      { time: "09:30 – 10:30", title: "Inaugural Ceremony & Keynote", venue: "Auditorium", type: "keynote" },
-      { time: "10:30 – 11:00", title: "Networking Break", venue: "Lobby", type: "break" },
-      { time: "11:00 – 13:00", title: "Track Sessions — Quantum Security & Post-Quantum Crypto", venue: "Lab A & B", type: "session" },
-      { time: "13:00 – 14:00", title: "Lunch Break", venue: "Cafeteria", type: "break" },
-      { time: "14:00 – 16:00", title: "Track Sessions — AI Cybersecurity & Cryptography", venue: "Lab C & D", type: "session" },
-      { time: "16:00 – 16:30", title: "Tea Break", venue: "Lobby", type: "break" },
-      { time: "16:30 – 18:00", title: "Hands-On Lab: Penetration Testing with AI", venue: "Cyber Lab", type: "workshop" },
+      { time: "09:00 ONWARDS", title: "Kit Distribution", type: "logistics" },
+      { time: "10:00 – 10:30", title: "Inaugural Ceremony & Keynote", type: "Keynote" },
+      { time: "10:30 – 11:45", title: "SESSION 1", type: "Technical Session" },
+      { time: "11:45 – 12:00", title: "Tea Break", type: "Break" },
+      { time: "12:00 – 13:30", title: "SESSION 2", type: "Technical Session" },
+      { time: "13:30 – 14:30", title: "LUNCH BREAK", type: "Break" },
+      { time: "14:30 – 15:45", title: "SESSION 3", type: "Technical Session" },
+      { time: "15:45 – 16:00", title: "TEA BREAK", type: "Break" },
+      { time: "16:00 – 17:15", title: "SESSION 4", type: "Technical Session" },
     ],
   },
   day2: {
     date: "March 11, 2026",
     events: [
-      { time: "09:00 – 11:00", title: "Track Sessions — Dark Web Analysis & Blockchain Forensics", venue: "Lab A & B", type: "session" },
-      { time: "11:00 – 11:30", title: "Networking Break", venue: "Lobby", type: "break" },
-      { time: "11:30 – 13:00", title: "Track Sessions — Mobile Forensics & UAV Forensics", venue: "Lab C & D", type: "session" },
-      { time: "13:00 – 14:00", title: "Lunch Break", venue: "Cafeteria", type: "break" },
-      { time: "14:00 – 16:00", title: "CTF Competition — Capture The Flag", venue: "Cyber Lab", type: "workshop" },
-      { time: "16:00 – 16:30", title: "Tea Break", venue: "Lobby", type: "break" },
-      { time: "16:30 – 17:30", title: "Panel Discussion: Future of Cybersecurity", venue: "Auditorium", type: "keynote" },
-      { time: "17:30 – 18:30", title: "Valedictory & Certificate Distribution", venue: "Auditorium", type: "logistics" },
+      { time: "10:00 – 11:15", title: "SESSION 5", type: "Technical Session" },
+      { time: "11:15 – 11:30", title: "TEA Break", type: "Break" },
+      { time: "11:30 – 12:45", title: "SESSION 6", type: "Technical Session" },
+      { time: "12:45 – 13:45", title: "Lunch Break", type: "Break" },
+      { time: "13:45 – 15:00", title: "SESSION 7", type: "Technical Session" },
+      { time: "15:00 – 15:15", title: "TEA Break", type: "Break" },
+      { time: "15:15 – 16:30", title: "SESSION 8", type: "Technical Session" },
+      { time: "16:30 – 17:45", title: "SESSION 9", type: "Technical Session" },
+      { time: "17:45 – 18:00", title: "Valedictory", type: "General" },
     ],
   },
 };
 
 const typeColors: Record<string, string> = {
-  keynote: "bg-primary/20 text-primary",
-  session: "bg-violet-mid/60 text-foreground",
-  workshop: "bg-primary/10 text-primary",
-  break: "bg-muted/30 text-muted-foreground",
-  logistics: "bg-secondary text-secondary-foreground",
+  Keynote: "bg-amber-400/15 text-amber-400",
+  "Technical Session": "bg-primary/15 text-primary",
+  Break: "bg-muted/40 text-muted-foreground",
+  logistics: "bg-emerald-400/15 text-emerald-400",
+  General: "bg-violet-400/15 text-violet-400",
 };
 
 const ScheduleSection = () => {
@@ -69,11 +71,10 @@ const ScheduleSection = () => {
             <button
               key={day}
               onClick={() => setActiveDay(day)}
-              className={`clip-btn px-8 py-3 font-heading font-bold text-sm uppercase tracking-widest transition-all duration-300 ${
-                activeDay === day
+              className={`clip-btn px-8 py-3 font-heading font-bold text-sm uppercase tracking-widest transition-all duration-300 ${activeDay === day
                   ? "bg-primary text-primary-foreground shadow-[var(--shadow-gold)]"
                   : "border border-primary/30 text-foreground hover:border-primary/60"
-              }`}
+                }`}
             >
               {day === "day1" ? "Day 1" : "Day 2"}
             </button>
@@ -104,12 +105,8 @@ const ScheduleSection = () => {
               </div>
               <div className="flex-1">
                 <h4 className="font-heading text-sm font-bold">{event.title}</h4>
-                <div className="flex items-center gap-2 mt-1">
-                  <MapPin className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">{event.venue}</span>
-                </div>
               </div>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider ${typeColors[event.type]}`}>
+              <span className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider ${typeColors[event.type] ?? "bg-muted/30 text-muted-foreground"}`}>
                 {event.type}
               </span>
             </motion.div>

@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import {
   Shield, Lock, Brain, Globe,
-  Link2, Smartphone, Radio, Cpu
+  Link2, Smartphone, Radio, Cpu, Search
 } from "lucide-react";
 
 const tracks = [
@@ -12,9 +12,9 @@ const tracks = [
   { icon: Brain, title: "Post-Quantum Cryptography", tag: "AI-04", desc: "Machine learning for threat detection and adversarial AI attacks" },
   { icon: Globe, title: "AI for Cybersecurity", tag: "DW-05", desc: "OSINT techniques, Tor network forensics, and threat intelligence" },
   { icon: Link2, title: "Blockchain Security", tag: "BF-06", desc: "Cryptocurrency tracing, smart contract auditing, DeFi exploits" },
-  { icon: Smartphone, title: "Dark Web Investigation", tag: "MF-07", desc: "Android/iOS acquisition, app analysis, and mobile malware" },
+  { icon: Search, title: "Dark Web Investigation", tag: "MF-07", desc: "Android/iOS acquisition, app analysis, and mobile malware" },
   { icon: Radio, title: "Collection and Preservation in UAV/Drone Forensics", tag: "UF-08", desc: "Drone data extraction, flight log analysis, and counter-UAV tech" },
-  {icon: Radio, title: "Inestigation of Crime through Mobile Forensics", tag: "UF-08", desc: "Drone data extraction, flight log analysis, and counter-UAV tech" },
+  { icon: Smartphone, title: "Investigation of Crime through Mobile Forensics", tag: "MF-09", desc: "Mobile device forensics, evidence collection, and crime investigation" },
 ];
 
 const TracksSection = () => {
