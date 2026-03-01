@@ -1,11 +1,11 @@
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SECRET_KEY
 );
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
     const email = req.query.email;
 
     if (req.method === 'GET' && !email) {
@@ -55,4 +55,4 @@ module.exports = async function handler(req, res) {
     }
 
     res.status(405).json({ error: 'Method not allowed' });
-};
+}
