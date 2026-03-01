@@ -34,7 +34,7 @@ const AboutSection = () => {
           {[
             {
               icon: Target,
-              title: "Hands-On Labs",
+              title: "Hands-On Session",
               desc: "Interactive sessions with real-world cybersecurity scenarios, forensic analysis tools, and quantum-safe encryption implementations.",
             },
             {

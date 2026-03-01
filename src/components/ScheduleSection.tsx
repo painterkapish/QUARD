@@ -28,7 +28,7 @@ const scheduleData = {
       { time: "15:00 – 15:15", title: "TEA Break", type: "Break" },
       { time: "15:15 – 16:30", title: "SESSION 8", type: "Technical Session" },
       { time: "16:30 – 17:45", title: "SESSION 9", type: "Technical Session" },
-      { time: "17:45 – 18:00", title: "Valedictory", type: "General" },
+      { time: "17:45 – 18:30", title: "Valedictory", type: "General" },
     ],
   },
 };

@@ -80,8 +80,8 @@ const ContactSection = () => {
                   <span className="font-heading text-sm font-bold text-primary">For Queries</span>
                 </div>
                 <div className="space-y-1 pl-6">
-                  <p className="text-foreground/80 text-sm">Moksh Grover — +91-98765 43210</p>
-                  <p className="text-foreground/80 text-sm">Herrin Shah — +91-98765 43211</p>
+                  <p className="text-foreground/80 text-sm">Moksh Grover — +91-98717 12217</p>
+                  <p className="text-foreground/80 text-sm">Herrin Shah — +91-93287 43418</p>
                 </div>
               </div>
 
@@ -91,42 +91,47 @@ const ContactSection = () => {
                   <span className="font-heading text-sm font-bold text-primary">Registration Support</span>
                 </div>
                 <div className="pl-6">
-                  <p className="text-foreground/80 text-sm">Sai Charan — +91-98765 43212</p>
+                  <p className="text-foreground/80 text-sm">Sai Charan — +91-80105 70034</p>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Google Maps embed */}
+        {/* Locate Us Map */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.35 }}
-          className="max-w-4xl mx-auto"
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="max-w-5xl mx-auto"
         >
-          <div className="gold-border rounded-2xl overflow-hidden" style={{ height: "380px" }}>
+          <div className="mb-8 flex flex-col items-center">
+            <h3 className="text-4xl font-heading font-extrabold mb-4">Locate <span className="text-gradient-gold">Us</span></h3>
+          </div>
+          <div
+            className="gold-border rounded-xl overflow-hidden bg-card/30 backdrop-blur-sm relative h-[450px] group cursor-pointer shadow-lg"
+            onClick={() => window.open("https://maps.app.goo.gl/mrevf7NaqwVUYXmM9", "_blank")}
+          >
             <iframe
               title="NFSU Chennai Campus Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.3270610063674!2d80.14970997507782!3d13.049985787249556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5267c3e3b70001%3A0x8df8a0b0e7d0a3b6!2sNational%20Forensic%20Sciences%20University%2C%20Chennai%20Campus!5e0!3m2!1sen!2sin!4v1709051200000!5m2!1sen!2sin"
+              src="https://maps.google.com/maps?q=National+Forensic+Sciences+University,+Chennai+Campus&t=&z=14&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
-              style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) brightness(0.85)" }}
+              style={{
+                border: 0,
+                filter: "invert(92%) hue-rotate(180deg) saturate(0.7) brightness(0.9) contrast(0.95)",
+              }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
+              className="pointer-events-none transition-all duration-500 rounded-xl group-hover:scale-105 group-hover:opacity-60"
             />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold shadow-2xl flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                <MapPin className="w-5 h-5" /> Open in Google Maps
+              </span>
+            </div>
           </div>
-          <p className="text-center mt-3 text-xs text-muted-foreground font-mono">
-            <a
-              href="https://maps.app.goo.gl/7U9ikj9TAMBjHZDXA"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              📍 View on Google Maps →
-            </a>
-          </p>
         </motion.div>
 
       </div>

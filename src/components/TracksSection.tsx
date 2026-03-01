@@ -7,14 +7,14 @@ import {
 
 const tracks = [
   { icon: Cpu, title: "Fundamental of Quantum Cryptography", tag: "QS-01", desc: "Quantum computing threats and quantum-safe defense mechanisms" },
-  { icon: Lock, title: "Introduction to Quantum Computing & Importance in Cybersecurity", tag: "PQC-02", desc: "NIST-approved algorithms and lattice-based cryptographic systems" },
-  { icon: Shield, title: "Fundamental of Quantum Cryptography", tag: "CR-03", desc: "Modern encryption standards, zero-knowledge proofs, and protocols" },
-  { icon: Brain, title: "Post-Quantum Cryptography", tag: "AI-04", desc: "Machine learning for threat detection and adversarial AI attacks" },
-  { icon: Globe, title: "AI for Cybersecurity", tag: "DW-05", desc: "OSINT techniques, Tor network forensics, and threat intelligence" },
-  { icon: Link2, title: "Blockchain Security", tag: "BF-06", desc: "Cryptocurrency tracing, smart contract auditing, DeFi exploits" },
-  { icon: Search, title: "Dark Web Investigation", tag: "MF-07", desc: "Android/iOS acquisition, app analysis, and mobile malware" },
-  { icon: Radio, title: "Collection and Preservation in UAV/Drone Forensics", tag: "UF-08", desc: "Drone data extraction, flight log analysis, and counter-UAV tech" },
-  { icon: Smartphone, title: "Investigation of Crime through Mobile Forensics", tag: "MF-09", desc: "Mobile device forensics, evidence collection, and crime investigation" },
+  { icon: Lock, title: "Introduction to Quantum Computing & Importance in Cybersecurity", tag: "QS-02", desc: "NIST-approved algorithms and lattice-based cryptographic systems" },
+  { icon: Shield, title: "Fundamental of Quantum Cryptography", tag: "QS-03", desc: "Modern encryption standards, zero-knowledge proofs, and protocols" },
+  { icon: Brain, title: "Post-Quantum Cryptography", tag: "QS-04", desc: "Machine learning for threat detection and adversarial AI attacks" },
+  { icon: Globe, title: "AI for Cybersecurity", tag: "QS-05", desc: "OSINT techniques, Tor network forensics, and threat intelligence" },
+  { icon: Link2, title: "Blockchain Security", tag: "QS-06", desc: "Cryptocurrency tracing, smart contract auditing, DeFi exploits" },
+  { icon: Search, title: "Dark Web Investigation", tag: "QS-07", desc: "Android/iOS acquisition, app analysis, and mobile malware" },
+  { icon: Radio, title: "Collection and Preservation in UAV/Drone Forensics", tag: "QS-08", desc: "Drone data extraction, flight log analysis, and counter-UAV tech" },
+  { icon: Smartphone, title: "Investigation of Crime through Mobile Forensics", tag: "QS-09", desc: "Mobile device forensics, evidence collection, and crime investigation" },
 ];
 
 const TracksSection = () => {

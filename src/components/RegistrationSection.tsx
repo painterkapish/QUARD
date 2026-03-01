@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 const categories = [
-  { value: "UG_STUDENT/PG_Student", label: "UG STUDENT/PG Student" },
-  { value: "PhD/RESEARCH_SCHOLAR", label: "PhD Scholar" },
-  { value: "FACULTY/Academicians", label: "Faculty/Academicians" },
+  { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 500 },
+  { value: "PhD/RESEARCH_SCHOLAR", label: "PhD / Research Scholar", amount: 750 },
+  { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 1000 },
 ];
 
 const RegistrationSection = () => {
@@ -13,6 +13,11 @@ const RegistrationSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const registrationAmount = selectedCategory
+    ? categories.find((c) => c.value === selectedCategory)?.amount
+    : null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -153,6 +158,8 @@ const RegistrationSection = () => {
                 <select
                   name="category"
                   required
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 >
                   <option value="">Select Category</option>
@@ -160,6 +167,11 @@ const RegistrationSection = () => {
                     <option key={c.value} value={c.value}>{c.label}</option>
                   ))}
                 </select>
+                {registrationAmount != null && (
+                  <p className="mt-3 font-mono text-sm text-primary font-medium">
+                    Registration amount: ₹{registrationAmount}
+                  </p>
+                )}
               </div>
 
               <div>
