@@ -98,7 +98,7 @@ const HeroSection = () => {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4"
         >
           {[
-            { value: "9", label: "Tracks" },
+            { value: "8", label: "Tracks" },
             { value: "2", label: "Days" },
             { value: "9", label: "Speakers" },
             { value: "30", label: "Seats" },

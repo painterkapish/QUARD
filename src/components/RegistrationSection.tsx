@@ -1,3 +1,5 @@
+"use client";
+
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
@@ -8,9 +10,13 @@ const categories = [
   { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 1000 },
 ];
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
+
 const RegistrationSection = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -19,31 +25,91 @@ const RegistrationSection = () => {
     ? categories.find((c) => c.value === selectedCategory)?.amount
     : null;
 
+  // ------------------------
+  // Validation Helpers
+  // ------------------------
+
+  const sanitize = (value: unknown): string =>
+    typeof value === "string" ? value.trim() : "";
+
+  const validateName = (value: string) =>
+    /^[A-Za-z\s'-]{2,40}$/.test(value);
+
+  const validateEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const validatePhone = (value: string) =>
+    /^[+]?[\d\s-]{10,15}$/.test(value);
+
+  const validateCollege = (value: string) =>
+    value.length >= 3 && value.length <= 120;
+
+  const validateCategory = (value: string) =>
+    categories.some((c) => c.value === value);
+
+  const validateFile = (file: File | null) => {
+    if (!file) return false;
+    if (file.size <= 0 || file.size > MAX_FILE_SIZE) return false;
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) return false;
+    return true;
+  };
+
+  // ------------------------
+  // Submit Handler
+  // ------------------------
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (status === "loading") return;
+
     setStatus("loading");
     setErrorMsg("");
 
-    const formData = new FormData(e.currentTarget);
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    // Client-side validation
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
+      const firstName = sanitize(formData.get("first_name"));
+      const lastName = sanitize(formData.get("last_name"));
+      const email = sanitize(formData.get("email"));
+      const phone = sanitize(formData.get("phone"));
+      const college = sanitize(formData.get("college"));
+      const category = sanitize(formData.get("category"));
+      const file = formData.get("college_id") as File | null;
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!validateName(firstName))
+        throw new Error("Please enter a valid first name (letters only).");
+
+      if (!validateName(lastName))
+        throw new Error("Please enter a valid last name (letters only).");
+
+      if (!validateEmail(email))
+        throw new Error("Please enter a valid email address.");
+
+      if (!validatePhone(phone))
+        throw new Error("Please enter a valid phone number.");
+
+      if (!validateCollege(college))
+        throw new Error("Please enter a valid college/organization name.");
+
+      if (!validateCategory(category))
+        throw new Error("Please select a valid category.");
+
+      if (!validateFile(file))
+        throw new Error("Invalid file. Only JPG, PNG, or PDF under 5MB allowed.");
+
+      // Simulate backend submission
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      setStatus("success");
+    } catch (error) {
       setStatus("error");
-      setErrorMsg("Please enter a valid email address.");
-      return;
+      setErrorMsg(
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again."
+      );
     }
-    if (!/^[+]?[\d\s-]{10,15}$/.test(phone)) {
-      setStatus("error");
-      setErrorMsg("Please enter a valid phone number.");
-      return;
-    }
-
-    // Simulate submission for now (will connect to backend)
-    await new Promise((r) => setTimeout(r, 2000));
-    setStatus("success");
   };
 
   return (
@@ -73,13 +139,19 @@ const RegistrationSection = () => {
           {status === "success" ? (
             <div className="gold-border rounded-xl p-12 bg-card/30 backdrop-blur-sm text-center">
               <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6" />
-              <h3 className="font-heading text-2xl font-bold mb-3">Registration Received!</h3>
+              <h3 className="font-heading text-2xl font-bold mb-3">
+                Registration Received!
+              </h3>
               <p className="text-muted-foreground">
                 Check your email for confirmation. We'll review your registration and get back to you soon.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="gold-border rounded-xl p-8 md:p-12 bg-card/30 backdrop-blur-sm space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="gold-border rounded-xl p-8 md:p-12 bg-card/30 backdrop-blur-sm space-y-6"
+            >
               {status === "error" && (
                 <div className="flex items-center gap-3 p-4 rounded-lg bg-destructive/10 border border-destructive/30">
                   <AlertCircle className="w-5 h-5 text-destructive shrink-0" />
@@ -99,6 +171,7 @@ const RegistrationSection = () => {
                     placeholder="John"
                   />
                 </div>
+
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
                     Last Name *
@@ -125,6 +198,7 @@ const RegistrationSection = () => {
                     placeholder="john@example.com"
                   />
                 </div>
+
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
                     Phone *
@@ -164,9 +238,12 @@ const RegistrationSection = () => {
                 >
                   <option value="">Select Category</option>
                   {categories.map((c) => (
-                    <option key={c.value} value={c.value}>{c.label}</option>
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
                   ))}
                 </select>
+
                 {registrationAmount != null && (
                   <p className="mt-3 font-mono text-sm text-primary font-medium">
                     Registration amount: ₹{registrationAmount}
@@ -176,7 +253,7 @@ const RegistrationSection = () => {
 
               <div>
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                  ID Proof ( College/Any Government ID in JPG/PNG/PDF, max 5MB) *
+                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 5MB) *
                 </label>
                 <input
                   name="college_id"
