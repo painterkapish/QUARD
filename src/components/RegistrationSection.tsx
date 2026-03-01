@@ -95,8 +95,8 @@ const RegistrationSection = () => {
       // Step 1: Upload image to Supabase Storage directly from frontend
       const { createClient } = await import("@supabase/supabase-js");
       const supabase = createClient(
-        import.meta.env.SUPABASE_URL,
-        import.meta.env.SUPABASE_SECRET_KEY
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
       );
 
       let id_proof_url = null;
