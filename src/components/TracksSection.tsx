@@ -35,18 +35,18 @@ const TracksSection = () => {
             // Workshop Tracks
           </span>
           <h2 className="text-4xl md:text-5xl font-heading font-extrabold mt-4">
-            8 <span className="text-gradient-gold">Specialized</span> Tracks
+            {tracks.length} <span className="text-gradient-gold">Specialized</span> Tracks
           </h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch max-w-6xl mx-auto">
           {tracks.map((track, i) => (
             <motion.div
               key={track.tag}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 * i }}
-              className="gold-border rounded-xl p-6 bg-card/30 backdrop-blur-sm group hover:bg-card/60 transition-all duration-300"
+              className="gold-border rounded-xl p-6 bg-card/30 backdrop-blur-sm group hover:bg-card/60 transition-all duration-300 flex flex-col h-full"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">

@@ -3,22 +3,9 @@ import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 const categories = [
-  { value: "UG_STUDENT", label: "UG Student" },
-  { value: "PG_STUDENT", label: "PG Student" },
-  { value: "RESEARCH_SCHOLAR", label: "Research Scholar" },
-  { value: "FACULTY", label: "Faculty" },
-  { value: "PROFESSIONAL", label: "Professional" },
-];
-
-const trackOptions = [
-  { value: "QUANTUM_SECURITY", label: "Quantum Security" },
-  { value: "POST_QUANTUM", label: "Post-Quantum Cryptography" },
-  { value: "CRYPTOGRAPHY", label: "Cryptography" },
-  { value: "AI_CYBERSECURITY", label: "AI in Cybersecurity" },
-  { value: "DARK_WEB", label: "Dark Web Analysis" },
-  { value: "BLOCKCHAIN", label: "Blockchain Forensics" },
-  { value: "MOBILE_FORENSICS", label: "Mobile Forensics" },
-  { value: "UAV_FORENSICS", label: "UAV Forensics" },
+  { value: "UG_STUDENT/PG_Student", label: "UG STUDENT/PG Student" },
+  { value: "PhD/RESEARCH_SCHOLAR", label: "PhD Scholar" },
+  { value: "FACULTY/Academicians", label: "Faculty/Academicians" },
 ];
 
 const RegistrationSection = () => {
@@ -159,64 +146,33 @@ const RegistrationSection = () => {
                 />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                    Category *
-                  </label>
-                  <select
-                    name="category"
-                    required
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c) => (
-                      <option key={c.value} value={c.value}>{c.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                    Track Interest *
-                  </label>
-                  <select
-                    name="track_interest"
-                    required
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                  >
-                    <option value="">Select Track</option>
-                    {trackOptions.map((t) => (
-                      <option key={t.value} value={t.value}>{t.label}</option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                  Category *
+                </label>
+                <select
+                  name="category"
+                  required
+                  className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                    College ID (JPG/PNG/PDF, max 5MB) *
-                  </label>
-                  <input
-                    name="college_id"
-                    type="file"
-                    required
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer"
-                  />
-                </div>
-                <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                    Payment Screenshot *
-                  </label>
-                  <input
-                    name="payment_screenshot"
-                    type="file"
-                    required
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer"
-                  />
-                </div>
+              <div>
+                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                  ID Proof ( College/Any Government ID in JPG/PNG/PDF, max 5MB) *
+                </label>
+                <input
+                  name="college_id"
+                  type="file"
+                  required
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer"
+                />
               </div>
 
               <button
