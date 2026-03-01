@@ -3,7 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "src/supabaseClient"; // adjust path as needed
 
 const categories = [
   { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 500 },
@@ -11,7 +11,7 @@ const categories = [
   { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 1000 },
 ];
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 const RegistrationSection = () => {
@@ -26,14 +26,28 @@ const RegistrationSection = () => {
     ? categories.find((c) => c.value === selectedCategory)?.amount
     : null;
 
+  // ------------------------
+  // Validation Helpers
+  // ------------------------
+
   const sanitize = (value: unknown): string =>
     typeof value === "string" ? value.trim() : "";
 
-  const validateName = (value: string) => /^[A-Za-z\s'-]{2,40}$/.test(value);
-  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  const validatePhone = (value: string) => /^[+]?[\d\s-]{10,15}$/.test(value);
-  const validateCollege = (value: string) => value.length >= 3 && value.length <= 120;
-  const validateCategory = (value: string) => categories.some((c) => c.value === value);
+  const validateName = (value: string) =>
+    /^[A-Za-z\s'-]{2,40}$/.test(value);
+
+  const validateEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const validatePhone = (value: string) =>
+    /^[+]?[\d\s-]{10,15}$/.test(value);
+
+  const validateCollege = (value: string) =>
+    value.length >= 3 && value.length <= 120;
+
+  const validateCategory = (value: string) =>
+    categories.some((c) => c.value === value);
+
   const validateFile = (file: File | null) => {
     if (!file) return false;
     if (file.size <= 0 || file.size > MAX_FILE_SIZE) return false;
@@ -41,8 +55,13 @@ const RegistrationSection = () => {
     return true;
   };
 
+  // ------------------------
+  // Submit Handler
+  // ------------------------
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (status === "loading") return;
 
     setStatus("loading");
@@ -59,13 +78,20 @@ const RegistrationSection = () => {
       const category = sanitize(formData.get("category"));
       const file = formData.get("college_id") as File | null;
 
-      if (!validateName(firstName)) throw new Error("Please enter a valid first name (letters only).");
-      if (!validateName(lastName)) throw new Error("Please enter a valid last name (letters only).");
-      if (!validateEmail(email)) throw new Error("Please enter a valid email address.");
-      if (!validatePhone(phone)) throw new Error("Please enter a valid phone number.");
-      if (!validateCollege(college)) throw new Error("Please enter a valid college/organization name.");
-      if (!validateCategory(category)) throw new Error("Please select a valid category.");
-      if (!validateFile(file)) throw new Error("Invalid file. Only JPG, PNG, or PDF under 5MB allowed.");
+      if (!validateName(firstName))
+        throw new Error("Please enter a valid first name (letters only).");
+      if (!validateName(lastName))
+        throw new Error("Please enter a valid last name (letters only).");
+      if (!validateEmail(email))
+        throw new Error("Please enter a valid email address.");
+      if (!validatePhone(phone))
+        throw new Error("Please enter a valid phone number.");
+      if (!validateCollege(college))
+        throw new Error("Please enter a valid college/organization name.");
+      if (!validateCategory(category))
+        throw new Error("Please select a valid category.");
+      if (!validateFile(file))
+        throw new Error("Invalid file. Only JPG, PNG, or PDF under 5MB allowed.");
 
       // Step 1: Upload ID proof to Supabase Storage
       const ext = file!.name.split(".").pop();
@@ -82,7 +108,7 @@ const RegistrationSection = () => {
         .from("id-proofs")
         .getPublicUrl(fileName);
 
-      // Step 3: Insert registration into DB
+      // Step 3: Insert into registrations table
       const { error: dbError } = await supabase
         .from("registrations")
         .insert({
@@ -97,7 +123,7 @@ const RegistrationSection = () => {
         });
 
       if (dbError) {
-        // Rollback: remove uploaded file if DB fails
+        // Rollback: delete uploaded file if DB insert fails
         await supabase.storage.from("id-proofs").remove([fileName]);
         throw new Error(dbError.message);
       }
@@ -106,7 +132,9 @@ const RegistrationSection = () => {
     } catch (error) {
       setStatus("error");
       setErrorMsg(
-        error instanceof Error ? error.message : "Registration failed. Please try again."
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again."
       );
     }
   };
@@ -138,7 +166,9 @@ const RegistrationSection = () => {
           {status === "success" ? (
             <div className="gold-border rounded-xl p-12 bg-card/30 backdrop-blur-sm text-center">
               <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6" />
-              <h3 className="font-heading text-2xl font-bold mb-3">Registration Received!</h3>
+              <h3 className="font-heading text-2xl font-bold mb-3">
+                Registration Received!
+              </h3>
               <p className="text-muted-foreground">
                 Check your email for confirmation. We'll review your registration and get back to you soon.
               </p>
@@ -158,47 +188,89 @@ const RegistrationSection = () => {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">First Name *</label>
-                  <input name="first_name" required placeholder="John"
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
+                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                    First Name *
+                  </label>
+                  <input
+                    name="first_name"
+                    required
+                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="John"
+                  />
                 </div>
+
                 <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Last Name *</label>
-                  <input name="last_name" required placeholder="Doe"
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
+                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                    Last Name *
+                  </label>
+                  <input
+                    name="last_name"
+                    required
+                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="Doe"
+                  />
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Email *</label>
-                  <input name="email" type="email" required placeholder="john@example.com"
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
+                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                    Email *
+                  </label>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="john@example.com"
+                  />
                 </div>
+
                 <div>
-                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Phone *</label>
-                  <input name="phone" type="tel" required placeholder="+91 9876543210"
-                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
+                  <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                    Phone *
+                  </label>
+                  <input
+                    name="phone"
+                    type="tel"
+                    required
+                    className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="+91 9876543210"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">College / Organization *</label>
-                <input name="college" required placeholder="National Forensics Science University"
-                  className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
+                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                  College / Organization *
+                </label>
+                <input
+                  name="college"
+                  required
+                  className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                  placeholder="National Forensics Science University"
+                />
               </div>
 
               <div>
-                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Category *</label>
-                <select name="category" required value={selectedCategory}
+                <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
+                  Category *
+                </label>
+                <select
+                  name="category"
+                  required
+                  value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 >
                   <option value="">Select Category</option>
                   {categories.map((c) => (
-                    <option key={c.value} value={c.value}>{c.label}</option>
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
                   ))}
                 </select>
+
                 {registrationAmount != null && (
                   <p className="mt-3 font-mono text-sm text-primary font-medium">
                     Registration amount: ₹{registrationAmount}
@@ -210,17 +282,30 @@ const RegistrationSection = () => {
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
                   ID Proof (College/Any Government ID in JPG/PNG/PDF, max 5MB) *
                 </label>
-                <input name="college_id" type="file" required accept=".jpg,.jpeg,.png,.pdf"
-                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer" />
+                <input
+                  name="college_id"
+                  type="file"
+                  required
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer"
+                />
               </div>
 
-              <button type="submit" disabled={status === "loading"}
+              <button
+                type="submit"
+                disabled={status === "loading"}
                 className="clip-btn w-full px-10 py-4 bg-primary text-primary-foreground font-heading font-bold text-sm uppercase tracking-widest hover:shadow-[var(--shadow-gold)] transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-3"
               >
                 {status === "loading" ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" />Submitting...</>
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Submitting...
+                  </>
                 ) : (
-                  <><Send className="w-5 h-5" />Submit Registration</>
+                  <>
+                    <Send className="w-5 h-5" />
+                    Submit Registration
+                  </>
                 )}
               </button>
             </form>
