@@ -16,7 +16,7 @@ export const config = {
 
 export default async function handler(req, res) {
     // ✅ Added
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+    if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_PUBLISHABLE_KEY) {
         return res.status(500).json({ error: 'Missing Supabase environment variables' });
     }
 
