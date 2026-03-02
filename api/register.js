@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import formidable from "formidable";
 import fs from "fs";
-import { validateApiPayload } from "./validation";
+import { validateApiPayload } from "./validation.js";
 
 export const config = {
     api: {
