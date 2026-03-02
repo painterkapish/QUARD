@@ -12,12 +12,15 @@ export default async function handler(req, res) {
     }
 
     try {
+        // ─── Check Registration Limit ─────────────────────
         const { count, error: countError } = await supabase
             .from("registrations")
             .select("*", { count: "exact", head: true });
 
         if (countError) {
-            return res.status(500).json({ error: "Could not verify registration limit." });
+            return res.status(500).json({
+                error: "Could not verify registration limit.",
+            });
         }
 
         const limitCheck = validateRegistrationLimit(count);
@@ -25,6 +28,7 @@ export default async function handler(req, res) {
             return res.status(429).json({ error: limitCheck.error });
         }
 
+        // ─── Extract Body ─────────────────────────────────
         const {
             first_name,
             last_name,
@@ -36,6 +40,7 @@ export default async function handler(req, res) {
             id_proof_path,
         } = req.body;
 
+        // ─── Validate Input ───────────────────────────────
         const payloadCheck = validateApiPayload({
             first_name,
             last_name,
@@ -50,6 +55,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: payloadCheck.error });
         }
 
+        // ─── Insert into Supabase ─────────────────────────
         const { data, error: dbError } = await supabase
             .from("registrations")
             .insert({
@@ -66,12 +72,20 @@ export default async function handler(req, res) {
             .single();
 
         if (dbError) {
-            return res.status(500).json({ error: "DB error: " + dbError.message });
+            return res.status(500).json({
+                error: "Database error: " + dbError.message,
+            });
         }
 
-        return res.status(200).json(data);
+        return res.status(200).json({
+            success: true,
+            message: "Registration successful",
+            data,
+        });
 
-    } catch (e) {
-        return res.status(500).json({ error: "Server error: " + e.message });
+    } catch (error) {
+        return res.status(500).json({
+            error: "Server error: " + error.message,
+        });
     }
 }
