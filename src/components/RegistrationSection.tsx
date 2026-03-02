@@ -18,12 +18,6 @@ import qr1000 from "../payment/QUARD UPI 1000.png";
 import qr1500 from "../payment/QUARD UPI 1500.jpeg";
 import qr2000 from "../payment/QUARD UPI 2000.jpeg";
 
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 const categories = [
   { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 1000 },
@@ -124,40 +118,18 @@ const RegistrationSection = () => {
       if (!validateFile(file))
         throw new Error("Invalid file. Only JPG, PNG, PDF under 5MB allowed.");
 
-      if (!file) throw new Error("File missing.");
-
-      const fileExt = file.name.split(".").pop();
-      const filePath = `registrations/${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("id-proofs")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw new Error("File upload failed.");
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("id-proofs")
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicUrlData.publicUrl;
+      const payload = new FormData();
+      payload.append("first_name", firstName);
+      payload.append("last_name", lastName);
+      payload.append("email", email);
+      payload.append("phone", phone);
+      payload.append("college", college);
+      payload.append("category", category);
+      payload.append("college_id", file!);
 
       await safeFetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          phone,
-          college,
-          category,
-          id_proof_url: publicUrl,
-          id_proof_path: filePath,
-        }),
+        body: payload,
       });
 
       setStatus("success");

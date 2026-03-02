@@ -1,5 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
-import { validateApiPayload, validateRegistrationLimit } from "./validation.js";
+import formidable from "formidable";
+import fs from "fs";
+
+export const config = {
+    api: {
+        bodyParser: false, // Important for file upload
+    },
+};
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -11,81 +18,73 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    try {
-        // ─── Check Registration Limit ─────────────────────
-        const { count, error: countError } = await supabase
-            .from("registrations")
-            .select("*", { count: "exact", head: true });
+    const form = formidable({ multiples: false });
 
-        if (countError) {
-            return res.status(500).json({
-                error: "Could not verify registration limit.",
-            });
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({ error: "File parsing failed." });
         }
 
-        const limitCheck = validateRegistrationLimit(count);
-        if (!limitCheck.valid) {
-            return res.status(429).json({ error: limitCheck.error });
-        }
-
-        // ─── Extract Body ─────────────────────────────────
-        const {
-            first_name,
-            last_name,
-            email,
-            phone,
-            college,
-            category,
-            id_proof_url,
-            id_proof_path,
-        } = req.body;
-
-        // ─── Validate Input ───────────────────────────────
-        const payloadCheck = validateApiPayload({
-            first_name,
-            last_name,
-            email,
-            phone,
-            college,
-            category,
-            id_proof_url,
-        });
-
-        if (!payloadCheck.valid) {
-            return res.status(400).json({ error: payloadCheck.error });
-        }
-
-        // ─── Insert into Supabase ─────────────────────────
-        const { data, error: dbError } = await supabase
-            .from("registrations")
-            .insert({
+        try {
+            const {
                 first_name,
                 last_name,
                 email,
                 phone,
                 college,
                 category,
-                id_proof_url,
-                id_proof_path,
-            })
-            .select()
-            .single();
+            } = fields;
 
-        if (dbError) {
+            const file = files.college_id;
+
+            if (!file) {
+                return res.status(400).json({ error: "File missing." });
+            }
+
+            const fileBuffer = fs.readFileSync(file.filepath);
+            const fileExt = file.originalFilename.split(".").pop();
+            const filePath = `registrations/${Date.now()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from("id-proofs")
+                .upload(filePath, fileBuffer);
+
+            if (uploadError) {
+                return res.status(500).json({ error: "File upload failed." });
+            }
+
+            const { data: publicUrlData } = supabase.storage
+                .from("id-proofs")
+                .getPublicUrl(filePath);
+
+            const publicUrl = publicUrlData.publicUrl;
+
+            const { error: dbError } = await supabase
+                .from("registrations")
+                .insert({
+                    first_name,
+                    last_name,
+                    email,
+                    phone,
+                    college,
+                    category,
+                    id_proof_url: publicUrl,
+                    id_proof_path: filePath,
+                });
+
+            if (dbError) {
+                return res.status(500).json({ error: dbError.message });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Registration successful",
+            });
+
+        } catch (error) {
             return res.status(500).json({
-                error: "Database error: " + dbError.message,
+                error: "Server error: " + error.message,
             });
         }
-
-        return res.status(200).json({
-            success: true,
-            message: "Registration successful",
-            data,
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            error: "Server error: " + error.message,
-        });
-    }
+    });
 }
