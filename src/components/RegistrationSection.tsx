@@ -10,7 +10,13 @@ const categories = [
   { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 2000 },
 ];
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+const QR_IMAGES: Record<string, string> = {
+  "UG_STUDENT/PG_Student": "/src/payment/QUARD UPI 1000.png",
+  "PhD/RESEARCH_SCHOLAR":  "/src/payment/QUARD UPI 1500.jpeg",
+  "FACULTY/Academicians":  "/src/payment/QUARD UPI 2000.jpeg",
+};
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 const RegistrationSection = () => {
@@ -121,7 +127,7 @@ const RegistrationSection = () => {
         throw new Error("Please select a valid category.");
 
       if (!validateFile(file))
-        throw new Error("Invalid file. Only JPG, PNG, PDF under 4 MB allowed.");
+        throw new Error("Invalid file. Only JPG, PNG, PDF under 5MB allowed.");
 
       const payload = new FormData();
       payload.append("first_name", firstName);
@@ -240,9 +246,32 @@ const RegistrationSection = () => {
                 )}
               </div>
 
+              {/* QR Code — shown only when a category is selected */}
+              {selectedCategory && QR_IMAGES[selectedCategory] && (
+                <motion.div
+                  key={selectedCategory}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex flex-col items-center gap-3"
+                >
+                  <p className="font-mono text-xs text-primary uppercase tracking-wider font-semibold">
+                    Scan to Pay — ₹{registrationAmount}
+                  </p>
+                  <img
+                    src={QR_IMAGES[selectedCategory]}
+                    alt={`UPI QR code for ₹${registrationAmount}`}
+                    className="w-56 h-auto rounded-lg border border-primary/20 shadow-md"
+                  />
+                  <p className="font-mono text-xs text-muted-foreground text-center">
+                    Scan with GPay, PhonePe, Paytm or any BHIM UPI app
+                  </p>
+                </motion.div>
+              )}
+
               <div>
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 4 MB) *
+                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 5MB) *
                 </label>
                 <input name="college_id" type="file" required accept=".jpg,.jpeg,.png,.pdf"
                   className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer" />
