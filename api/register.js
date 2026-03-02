@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { validateApiPayload, validateRegistrationLimit } from "./validation.js";git add api/validation.js
+import { validateApiPayload, validateRegistrationLimit } from "./validation.js";
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
