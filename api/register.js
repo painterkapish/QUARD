@@ -4,7 +4,7 @@ import fs from "fs";
 
 export const config = {
     api: {
-        bodyParser: false, // Important for file upload
+        bodyParser: false, // Required for formidable
     },
 };
 
@@ -18,7 +18,10 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const form = formidable({ multiples: false });
+    const form = formidable({
+        multiples: false,
+        keepExtensions: true,
+    });
 
     form.parse(req, async (err, fields, files) => {
         if (err) {
@@ -35,22 +38,37 @@ export default async function handler(req, res) {
                 category,
             } = fields;
 
-            const file = files.college_id;
+            // 🔥 FIX STARTS HERE
+            const fileArray = files.college_id;
 
-            if (!file) {
+            if (!fileArray || !fileArray[0]) {
                 return res.status(400).json({ error: "File missing." });
             }
 
-            const fileBuffer = fs.readFileSync(file.filepath);
-            const fileExt = file.originalFilename.split(".").pop();
-            const filePath = `registrations/${Date.now()}.${fileExt}`;
+            const uploadedFile = fileArray[0];
 
+            if (!uploadedFile.filepath) {
+                return res.status(400).json({ error: "Invalid file path." });
+            }
+
+            const fileBuffer = fs.readFileSync(uploadedFile.filepath);
+
+            const fileExt = uploadedFile.originalFilename
+                ?.split(".")
+                .pop();
+
+            const filePath = `registrations/${Date.now()}.${fileExt}`;
+            // 🔥 FIX ENDS HERE
+
+            // Upload to Supabase Storage
             const { error: uploadError } = await supabase.storage
                 .from("id-proofs")
-                .upload(filePath, fileBuffer);
+                .upload(filePath, fileBuffer, {
+                    contentType: uploadedFile.mimetype,
+                });
 
             if (uploadError) {
-                return res.status(500).json({ error: "File upload failed." });
+                return res.status(500).json({ error: uploadError.message });
             }
 
             const { data: publicUrlData } = supabase.storage
@@ -59,6 +77,7 @@ export default async function handler(req, res) {
 
             const publicUrl = publicUrlData.publicUrl;
 
+            // Insert into database
             const { error: dbError } = await supabase
                 .from("registrations")
                 .insert({
