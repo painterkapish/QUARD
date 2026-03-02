@@ -3,14 +3,14 @@ import { useRef } from "react";
 
 const speakers = [
   { name: "Dr. V Natarajan", role: "Scientist ‘E’", org: "SETS, Chennai", avatar: "VN" },
-  { name: "Dr. Vishnu Priya", role: "Assistant Professor", org: "NIT, TRICHY", avatar: "VP" },
   { name: "Dr. V. Mary Anita Rajam", role: "Deputy Director – Centre for Cyber Security", org: "Anna University, Chennai", avatar: "MA" },
-  { name: "Dr. M. Subramani", role: "Assistant Professor", org: "IIITDM, Kancheepuram", avatar: "MS" },
   { name: "Dr. Harish Ramani", role: "Professor", org: "IIT Madras Chennai", avatar: "HR" },
-  { name: "Dr. Srikanth Prabhu", role: "Assistant Professor", org: "Manipal University ", avatar: "SP" },
-  { name: "Dr. Jayakumar Vaithiyashankar", role: "Founder and CEO", org: "Anuthantra Pvt. Ltd. ", avatar: "JV" },
-  { name: "Mr. Akhith R", role: "Assistant Professor", org: "DY Patil University", avatar: "AR" },
   { name: "Ms. Shahnaz Illyas, IPS", role: "SP, Cyber Crime Wing", org: "Tamil Nadu", avatar: "SI" },
+  { name: "Dr. Jayakumar Vaithiyashankar", role: "Founder and CEO", org: "Anuthantra Pvt. Ltd. ", avatar: "JV" },
+  { name: "Dr. Vishnu Priya", role: "Assistant Professor", org: "NIT, TRICHY", avatar: "VP" },
+  { name: "Dr. M. Subramani", role: "Assistant Professor", org: "IIITDM, Kancheepuram", avatar: "MS" },
+  { name: "Dr. Srikanth Prabhu", role: "Assistant Professor", org: "Manipal University ", avatar: "SP" },
+  { name: "Mr. Akhith R", role: "Assistant Professor", org: "DY Patil University", avatar: "AR" },
 ];
 
 const SpeakersSection = () => {
