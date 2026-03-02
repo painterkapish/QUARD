@@ -4,6 +4,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
+import qr1000 from "../payment/QUARD UPI 1000.png";
+import qr1500 from "../payment/QUARD UPI 1500.jpeg";
+import qr2000 from "../payment/QUARD UPI 2000.jpeg";
+
 const categories = [
   { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 1000 },
   { value: "PhD/RESEARCH_SCHOLAR", label: "PhD / Research Scholar", amount: 1500 },
@@ -11,12 +15,12 @@ const categories = [
 ];
 
 const QR_IMAGES: Record<string, string> = {
-  "UG_STUDENT/PG_Student": "/src/payment/QUARD UPI 1000.png",
-  "PhD/RESEARCH_SCHOLAR":  "/src/payment/QUARD UPI 1500.jpeg",
-  "FACULTY/Academicians":  "/src/payment/QUARD UPI 2000.jpeg",
+  "UG_STUDENT/PG_Student": qr1000,
+  "PhD/RESEARCH_SCHOLAR": qr1500,
+  "FACULTY/Academicians": qr2000,
 };
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 const RegistrationSection = () => {
