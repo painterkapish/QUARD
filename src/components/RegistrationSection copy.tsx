@@ -280,7 +280,7 @@ const RegistrationSection = () => {
 
               <div>
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 5MB) *
+                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 10 MB) *
                 </label>
                 <input
                   name="college_id"
