@@ -3,7 +3,17 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-
+import {
+  sanitize,
+  validateName,
+  validateEmail,
+  validatePhone,
+  validateCollege,
+  validateCategory,
+  validateFile,
+  MAX_FILE_SIZE,
+  ALLOWED_FILE_TYPES,
+} from "./validation.ts";
 import qr1000 from "../payment/QUARD UPI 1000.png";
 import qr1500 from "../payment/QUARD UPI 1500.jpeg";
 import qr2000 from "../payment/QUARD UPI 2000.jpeg";
@@ -20,9 +30,6 @@ const QR_IMAGES: Record<string, string> = {
   "FACULTY/Academicians": qr2000,
 };
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 5MB
-const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
-
 const RegistrationSection = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -35,29 +42,6 @@ const RegistrationSection = () => {
   const registrationAmount =
     categories.find((c) => c.value === selectedCategory)?.amount ?? null;
 
-  const sanitize = (value: unknown): string =>
-    typeof value === "string" ? value.trim() : "";
-
-  const validateName = (value: string) =>
-    /^[A-Za-z\s'-]{2,40}$/.test(value);
-
-  const validateEmail = (value: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-  const validatePhone = (value: string) =>
-    /^[+]?[\d\s-]{10,15}$/.test(value);
-
-  const validateCollege = (value: string) =>
-    value.length >= 3 && value.length <= 120;
-
-  const validateCategory = (value: string) =>
-    categories.some((c) => c.value === value);
-
-  const validateFile = (file: File | null) =>
-    !!file &&
-    file.size > 0 &&
-    file.size <= MAX_FILE_SIZE &&
-    ALLOWED_FILE_TYPES.includes(file.type);
 
   const safeFetch = async (url: string, options: RequestInit) => {
     const controller = new AbortController();

@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { validateUploadFile, validateStoragePath, sanitize } from "../lib/validation.js";
 
 // ─── Submit Registration ──────────────────────────────────────────────────────
 export async function submitRegistration({
@@ -10,22 +11,50 @@ export async function submitRegistration({
     category,
     id_proof_file,
 }) {
-    const payload = new FormData();
-    payload.append("first_name", first_name);
-    payload.append("last_name", last_name);
-    payload.append("email", email);
-    payload.append("phone", phone);
-    payload.append("college", college);
-    payload.append("category", category);
-    payload.append("college_id", id_proof_file, id_proof_file.name);
+    // Step 1: Validate file before uploading
+    const fileCheck = validateUploadFile(id_proof_file);
+    if (!fileCheck.valid) throw new Error(fileCheck.error);
 
+    // Upload file directly to Supabase Storage from the client.
+    // This completely bypasses the serverless function payload limit.
+    const ext = id_proof_file.name.split(".").pop();
+    const safeEmail = email.replace(/[@.]/g, "_");
+    const filePath = `${Date.now()}-${safeEmail}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+        .from("id-proofs")
+        .upload(filePath, id_proof_file, {
+            contentType: id_proof_file.type,
+            cacheControl: "3600",
+            upsert: false,
+        });
+
+    if (uploadError) throw new Error("File upload failed: " + uploadError.message);
+
+    // Step 2: Get the public URL of the uploaded file
+    const { data: urlData } = supabase.storage
+        .from("id-proofs")
+        .getPublicUrl(filePath);
+
+    // Step 3: Send only text fields + file URL to the API (tiny payload, no file)
     const res = await fetch("/api/register", {
         method: "POST",
-        // Do NOT set Content-Type — browser sets multipart/form-data with boundary automatically
-        body: payload,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            first_name,
+            last_name,
+            email,
+            phone,
+            college,
+            category,
+            id_proof_url: urlData.publicUrl,
+            id_proof_path: filePath,
+        }),
     });
 
     if (!res.ok) {
+        // If DB insert fails, clean up the uploaded file
+        await supabase.storage.from("id-proofs").remove([filePath]);
         const err = await res.json();
         throw new Error(err.error || "Registration failed");
     }
