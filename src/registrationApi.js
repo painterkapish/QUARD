@@ -1,60 +1,16 @@
 import { supabase } from "./supabaseClient";
 
-// ─── Image Compressor ─────────────────────────────────────────────────────────
-async function compressImage(file, maxSizeKB = 400) {
-    return new Promise((resolve) => {
-        if (!file.type.startsWith("image/") || file.size <= maxSizeKB * 1024) {
-            return resolve(file);
-        }
-
-        const img = new Image();
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        img.onload = () => {
-            let { width, height } = img;
-            const MAX_DIM = 1200;
-
-            if (width > MAX_DIM || height > MAX_DIM) {
-                if (width > height) {
-                    height = Math.round((height / width) * MAX_DIM);
-                    width = MAX_DIM;
-                } else {
-                    width = Math.round((width / height) * MAX_DIM);
-                    height = MAX_DIM;
-                }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-
-            canvas.toBlob(
-                (blob) => resolve(new File([blob], file.name, { type: "image/jpeg" })),
-                "image/jpeg",
-                0.75
-            );
-        };
-
-        img.onerror = () => resolve(file);
-        img.src = URL.createObjectURL(file);
-    });
-}
-
 // ─── Convert File to Base64 ───────────────────────────────────────────────────
 async function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(",")[1]); // strip "data:...;base64,"
+        reader.onload = () => resolve(reader.result.split(",")[1]);
         reader.onerror = () => reject(new Error("File read failed"));
         reader.readAsDataURL(file);
     });
 }
 
 // ─── Submit Registration ──────────────────────────────────────────────────────
-// ✅ Now calls /api/register (Vercel server) instead of Supabase directly.
-// This fixes "Failed to fetch" on Jio/BSNL/mobile networks with DNS issues.
-// Flow: Phone → Vercel Server → Supabase (server has no DNS issues)
 export async function submitRegistration({
     first_name,
     last_name,
@@ -64,13 +20,9 @@ export async function submitRegistration({
     category,
     id_proof_file,
 }) {
-    // STEP 1: Compress image on device before sending
-    const compressedFile = await compressImage(id_proof_file);
+    // Convert file to base64 (no compression)
+    const fileBase64 = await fileToBase64(id_proof_file);
 
-    // STEP 2: Convert to base64 to send as JSON
-    const fileBase64 = await fileToBase64(compressedFile);
-
-    // STEP 3: Send to Vercel API route (not Supabase directly)
     const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,6 +35,7 @@ export async function submitRegistration({
             category,
             fileBase64,
             fileName: id_proof_file.name,
+            fileType: id_proof_file.type,
         }),
     });
 
