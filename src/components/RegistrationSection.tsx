@@ -3,7 +3,9 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { supabase } from "../supabaseClient";
+
+// ✅ REMOVED: import { supabase } from "../supabaseClient"
+// Now uses /api/register (Vercel server) — fixes DNS issue on Jio/BSNL
 
 const categories = [
   { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 500 },
@@ -13,6 +15,47 @@ const categories = [
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "application/pdf"];
+
+// ─── Image Compressor ─────────────────────────────────────────────────────────
+async function compressImage(file: File): Promise<File> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith("image/") || file.size <= 400 * 1024) {
+      return resolve(file);
+    }
+
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+
+    img.onload = () => {
+      let { width, height } = img;
+      const MAX_DIM = 1200;
+
+      if (width > MAX_DIM || height > MAX_DIM) {
+        if (width > height) {
+          height = Math.round((height / width) * MAX_DIM);
+          width = MAX_DIM;
+        } else {
+          width = Math.round((width / height) * MAX_DIM);
+          height = MAX_DIM;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })),
+        "image/jpeg",
+        0.75
+      );
+    };
+
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+}
 
 const RegistrationSection = () => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -65,41 +108,42 @@ const RegistrationSection = () => {
       if (!validatePhone(phone)) throw new Error("Please enter a valid phone number.");
       if (!validateCollege(college)) throw new Error("Please enter a valid college/organization name.");
       if (!validateCategory(category)) throw new Error("Please select a valid category.");
-      if (!validateFile(file)) throw new Error("Invalid file. Only JPG, PNG, or PDF under 10 MB allowed.");
+      if (!validateFile(file)) throw new Error("Invalid file. Only JPG, PNG, or PDF under 5 MB allowed.");
 
-      // Step 1: Upload ID proof to Supabase Storage
-      const ext = file!.name.split(".").pop();
-      const fileName = `${Date.now()}_${email}.${ext}`;
+      // ✅ STEP 1: Compress image on device (reduces size before sending)
+      const processedFile = file!.type.startsWith("image/")
+        ? await compressImage(file!)
+        : file!;
 
-      const { error: uploadError } = await supabase.storage
-        .from("id-proofs")
-        .upload(fileName, file!, { contentType: file!.type });
+      // ✅ STEP 2: Convert file to base64
+      const fileBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(",")[1]);
+        reader.onerror = () => reject(new Error("File read failed"));
+        reader.readAsDataURL(processedFile);
+      });
 
-      if (uploadError) throw new Error("File upload failed: " + uploadError.message);
-
-      // Step 2: Get public URL
-      const { data: urlData } = supabase.storage
-        .from("id-proofs")
-        .getPublicUrl(fileName);
-
-      // Step 3: Insert registration into DB
-      const { error: dbError } = await supabase
-        .from("registrations")
-        .insert({
+      // ✅ STEP 3: Send to Vercel API route (NOT directly to Supabase)
+      // Phone → nfsuquard.vercel.app/api/register → Supabase
+      // This bypasses Jio/BSNL DNS blocking of supabase.co
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           first_name: firstName,
           last_name: lastName,
           email,
           phone,
           college,
           category,
-          id_proof_url: urlData.publicUrl,
-          id_proof_path: fileName,
-        });
+          fileBase64,
+          fileName: file!.name,
+        }),
+      });
 
-      if (dbError) {
-        // Rollback: remove uploaded file if DB fails
-        await supabase.storage.from("id-proofs").remove([fileName]);
-        throw new Error(dbError.message);
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Registration failed. Please try again.");
       }
 
       setStatus("success");
@@ -208,24 +252,22 @@ const RegistrationSection = () => {
 
               <div>
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">
-                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 10 MB) *
+                  ID Proof (College/Any Government ID in JPG/PNG/PDF, max 5 MB) *
                 </label>
                 <input name="college_id" type="file" required accept=".jpg,.jpeg,.png,.pdf"
                   className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-primary/30 file:text-sm file:font-mono file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:transition-colors file:cursor-pointer" />
               </div>
-              {/* Registration Details */}
+
               <div className="pt-4 border-t border-border space-y-2">
                 <h4 className="font-heading text-sm font-semibold text-primary uppercase tracking-wider">
                   Registration Details
                 </h4>
-
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Registration fee varies by course.</li>
                   <li>After registration, a confirmation email will be sent along with payment details.</li>
                   <li>After verification, registration will be confirmed.</li>
                 </ul>
               </div>
-
 
               <button type="submit" disabled={status === "loading"}
                 className="clip-btn w-full px-10 py-4 bg-primary text-primary-foreground font-heading font-bold text-sm uppercase tracking-widest hover:shadow-[var(--shadow-gold)] transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-3"
