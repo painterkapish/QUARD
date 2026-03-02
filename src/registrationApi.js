@@ -1,15 +1,5 @@
 import { supabase } from "./supabaseClient";
 
-// ─── Convert File to Base64 ───────────────────────────────────────────────────
-async function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = () => reject(new Error("File read failed"));
-        reader.readAsDataURL(file);
-    });
-}
-
 // ─── Submit Registration ──────────────────────────────────────────────────────
 export async function submitRegistration({
     first_name,
@@ -20,23 +10,19 @@ export async function submitRegistration({
     category,
     id_proof_file,
 }) {
-    // Convert file to base64 (no compression)
-    const fileBase64 = await fileToBase64(id_proof_file);
+    const payload = new FormData();
+    payload.append("first_name", first_name);
+    payload.append("last_name", last_name);
+    payload.append("email", email);
+    payload.append("phone", phone);
+    payload.append("college", college);
+    payload.append("category", category);
+    payload.append("college_id", id_proof_file, id_proof_file.name);
 
     const res = await fetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            first_name,
-            last_name,
-            email,
-            phone,
-            college,
-            category,
-            fileBase64,
-            fileName: id_proof_file.name,
-            fileType: id_proof_file.type,
-        }),
+        // Do NOT set Content-Type — browser sets multipart/form-data with boundary automatically
+        body: payload,
     });
 
     if (!res.ok) {

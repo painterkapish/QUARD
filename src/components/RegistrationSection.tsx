@@ -5,9 +5,9 @@ import { useRef, useState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 const categories = [
-  { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 1000 },
-  { value: "PhD/RESEARCH_SCHOLAR", label: "PhD / Research Scholar", amount: 1500 },
-  { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 2000 },
+  { value: "UG_STUDENT/PG_Student", label: "UG Student / PG Student", amount: 500 },
+  { value: "PhD/RESEARCH_SCHOLAR", label: "PhD / Research Scholar", amount: 750 },
+  { value: "FACULTY/Academicians", label: "Faculty / Academicians", amount: 1000 },
 ];
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -62,10 +62,13 @@ const RegistrationSection = () => {
       clearTimeout(timeout);
 
       let data: any = null;
-      try {
-        data = await res.json();
-      } catch {
-        data = null;
+      const contentType = res.headers.get("content-type") ?? "";
+      if (contentType.includes("application/json")) {
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
       }
 
       if (!res.ok) {
@@ -120,28 +123,20 @@ const RegistrationSection = () => {
       if (!validateFile(file))
         throw new Error("Invalid file. Only JPG, PNG, PDF under 10 MB allowed.");
 
-      const fileBase64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () =>
-          resolve((reader.result as string).split(",")[1]);
-        reader.onerror = () =>
-          reject(new Error("File read failed."));
-        reader.readAsDataURL(file!);
-      });
+      const payload = new FormData();
+      payload.append("first_name", firstName);
+      payload.append("last_name", lastName);
+      payload.append("email", email);
+      payload.append("phone", phone);
+      payload.append("college", college);
+      payload.append("category", category);
+      payload.append("college_id", file!, file!.name);
 
       await safeFetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          phone,
-          college,
-          category,
-          fileBase64,
-          fileName: file!.name,
-        }),
+        // Do NOT set Content-Type header — browser sets it automatically
+        // with the correct multipart boundary when using FormData
+        body: payload,
       });
 
       setStatus("success");
