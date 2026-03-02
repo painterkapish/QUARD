@@ -117,20 +117,20 @@ const RegistrationSection = () => {
       if (!validateFile(file))
         throw new Error("Invalid file. Only JPG, PNG, PDF under 5MB allowed.");
 
-      const payload = new FormData();
-      payload.append("first_name", firstName);
-      payload.append("last_name", lastName);
-      payload.append("email", email);
-      payload.append("phone", phone);
-      payload.append("college", college);
-      payload.append("category", category);
-      payload.append("college_id", file!, file!.name);
-
       await safeFetch("/api/register", {
         method: "POST",
-        // Do NOT set Content-Type header — browser sets it automatically
-        // with the correct multipart boundary when using FormData
-        body: payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          college,
+          category,
+          id_proof_url: "uploaded-separately"
+        }),
       });
 
       setStatus("success");
