@@ -329,6 +329,10 @@ const RegistrationSection = () => {
                     <span className="text-primary mt-0.5">•</span>
                     After verification registration will be confirmed.
                   </li>
+                  <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <span className="text-primary mt-0.5">•</span>
+                    In case your payment is successful but the registration process fails, kindly reach out to the Organizing Committee for assistance.
+                  </li>
                 </ul>
               </div>
 
