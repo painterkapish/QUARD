@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import favicon from "public/favicon.ico"
 
 const navItems = [
   { label: "About", href: "#about" },
@@ -30,7 +31,7 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <a href="#" className="flex items-center gap-3">
           <img
-            src="/public/favicon.ico"
+            src={favicon}
             alt="Workshop Logo"
             className="h-20 w-auto object-contain"
           />
