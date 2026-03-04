@@ -10,7 +10,7 @@ const scheduleData = {
       { time: "10:00 – 10:30", title: "Inaugural Ceremony & Keynote", type: "Keynote" },
       { time: "10:30 – 11:45", title: "SESSION 1", type: "Technical Session" },
       { time: "11:45 – 12:00", title: "Tea Break", type: "Break" },
-      { time: "12:00 – 13:30", title: "SESSION 2", type: "Technical Session" },
+      { time: "12:00 – 13:15", title: "SESSION 2", type: "Technical Session" },
       { time: "13:30 – 14:30", title: "LUNCH BREAK", type: "Break" },
       { time: "14:30 – 15:45", title: "SESSION 3", type: "Technical Session" },
       { time: "15:45 – 16:00", title: "TEA BREAK", type: "Break" },
@@ -27,8 +27,8 @@ const scheduleData = {
       { time: "13:45 – 15:00", title: "SESSION 7", type: "Technical Session" },
       { time: "15:00 – 15:15", title: "TEA Break", type: "Break" },
       { time: "15:15 – 16:30", title: "SESSION 8", type: "Technical Session" },
-      { time: "16:30 – 17:45", title: "SESSION 9", type: "Technical Session" },
-      { time: "17:45 – 18:30", title: "Valedictory", type: "General" },
+      { time: "16:30 – 17:30", title: "Valedictory", type: "General" },
+      
     ],
   },
 };
