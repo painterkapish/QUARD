@@ -32,15 +32,9 @@ const tracks = [
   },
   {
     icon: Link2,
-    title: "Blockchain Security",
+    title: "Cloud Security",
     tag: "QS-05",
-    desc: "Analyzing vulnerabilities and defensive strategies in blockchain systems and secure decentralized infrastructures.",
-  },
-  {
-    icon: Radio,
-    title: "Collection and Preservation in UAV/Drone Forensics",
-    tag: "QS-06",
-    desc: "Forensic acquisition, analysis, and preservation of digital evidence from unmanned aerial systems.",
+    desc: "Analyzing vulnerabilities and defensive strategies in cloud platforms.",
   },
   {
     icon: Search,
@@ -77,8 +71,8 @@ const TracksSection = () => {
             <span className="text-gradient-gold">Specialized</span> Tracks
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-sm md:text-base text-muted-foreground">
-            Eight specialized focus areas across quantum security, AI-driven defense systems,
-            cryptography, blockchain systems, and digital forensics.
+            Seven specialized focus areas across quantum security, AI-driven defense systems,
+            cryptography, cloud systems, and digital forensics.
           </p>
         </motion.div>
 
@@ -90,7 +84,7 @@ const TracksSection = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 * i }}
               className={`gold-border rounded-xl p-6 bg-card/30 backdrop-blur-sm group hover:bg-card/60 transition-all duration-300 flex flex-col h-full sm:col-span-2 ${
-                i === 6 ? "sm:col-start-2" : i === 7 ? "sm:col-start-4" : ""
+                i === 6 ? "sm:col-start-3" :  ""
               }`}
             >
               <div className="flex items-center justify-between mb-4">
