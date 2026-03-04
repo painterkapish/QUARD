@@ -24,9 +24,9 @@ const AboutSection = () => {
             Defending the <span className="text-gradient-gold">Digital Frontier</span>
           </h2>
           <p className="text-muted-foreground max-w-3xl mx-auto text-lg leading-relaxed">
-            QUARD² brings together leading cybersecurity researchers, AI experts, and quantum computing pioneers
+            QTF brings together leading cybersecurity researchers, AI experts, and quantum computing pioneers
             for an intensive two-day workshop at the National Forensics Science University, Chennai Campus.
-            Explore cutting-edge topics from post-quantum cryptography to UAV forensics.
+            Explore cutting-edge topics from post-quantum cryptography to cloud security.
           </p>
         </motion.div>
 
@@ -45,7 +45,7 @@ const AboutSection = () => {
             {
               icon: Lightbulb,
               title: "Future-Ready Skills",
-              desc: "Master emerging technologies in AI-driven security, blockchain forensics, and post-quantum cryptographic standards.",
+              desc: "Master emerging technologies in AI-driven security, cloud security, and post-quantum cryptographic standards.",
             },
           ].map((item, i) => (
             <motion.div
