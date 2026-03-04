@@ -39,13 +39,13 @@ const tracks = [
   {
     icon: Search,
     title: "Dark Web Investigation",
-    tag: "QS-07",
+    tag: "QS-06",
     desc: "Investigating technologies, structures, and methodologies used to detect and track illicit activities on the dark web.",
   },
   {
     icon: Smartphone,
     title: "Investigation of Crime Through Mobile Forensics",
-    tag: "QS-08",
+    tag: "QS-07",
     desc: "Utilizing mobile forensic techniques to reconstruct events and establish digital evidence in criminal investigations.",
   },
 ];
