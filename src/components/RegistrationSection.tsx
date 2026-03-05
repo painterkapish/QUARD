@@ -224,12 +224,12 @@ const RegistrationSection = () => {
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">First Name *</label>
-                  <input name="first_name" required placeholder="John"
+                  <input name="first_name" required placeholder="First Name"
                     className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
                 </div>
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Last Name *</label>
-                  <input name="last_name" required placeholder="Doe"
+                  <input name="last_name" required placeholder="Last Name"
                     className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
                 </div>
               </div>
@@ -237,19 +237,19 @@ const RegistrationSection = () => {
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Email *</label>
-                  <input name="email" type="email" required placeholder="john@example.com"
+                  <input name="email" type="email" required placeholder=" EMAIL ADDRESS"
                     className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
                 </div>
                 <div>
                   <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">Phone *</label>
-                  <input name="phone" type="tel" required placeholder="+91 9876543210"
+                  <input name="phone" type="tel" required placeholder="Phone Number"
                     className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
                 </div>
               </div>
 
               <div>
                 <label className="font-mono text-xs text-muted-foreground uppercase tracking-wider block mb-2">College / Organization *</label>
-                <input name="college" required placeholder="National Forensics Science University"
+                <input name="college" required placeholder="College / Organization"
                   className="w-full px-4 py-3 bg-muted/30 border border-border rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors" />
               </div>
 
