@@ -4,7 +4,7 @@ import { useRef } from "react";
 const speakers = [
   { name: "Dr. V Natarajan", role: "Scientist 'E'", org: "SETS, Chennai", avatar: "VN" },
   { name: "Dr. V. Mary Anita Rajam", role: "Director – Centre for Cyber Security", org: "Anna University, Chennai", avatar: "MA" },
-  { name: "Dr. Harish Ramani", role: "Chief Executive", org: "IIT Madras Chennai", avatar: "HR" },
+  { name: "Dr. Harish Ramani", role: "Chief Executive", org: "Tevel Cyber", avatar: "HR" },
   { name: "Ms. Shahnaz Illyas, IPS", role: "SP, Cyber Crime Wing", org: "Tamil Nadu", avatar: "SI" },
   { name: "Dr. Jayakumar Vaithiyashankar", role: "Founder and CEO", org: "Anuthantra Pvt. Ltd.", avatar: "JV" },
   { name: "Dr. Vishnu Priya", role: "Assistant Professor", org: "NIT, TRICHY", avatar: "VP" },
