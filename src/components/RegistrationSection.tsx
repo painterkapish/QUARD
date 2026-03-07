@@ -35,9 +35,9 @@ const QR_IMAGES: Record<string, string> = {
 const terminalLines = [
   {
     cmd: "sessions_count:",
-    val: "8",
+    val: "9",
     color: "text-primary",
-    hint: "A quiz held after each of the 8 sessions — every answer counts",
+    hint: "A quiz held after each of the 9 sessions — every answer counts",
   },
   {
     cmd: "prize:",
@@ -108,7 +108,7 @@ const RegistrationSection = () => {
   const registrationAmount =
     categories.find((c) => c.value === selectedCategory)?.amount ?? null;
 
-  const MAX_SEATS = 30;
+  const MAX_SEATS = 22;
   const filled = MAX_SEATS - (seatsLeft ?? MAX_SEATS);
   const pct = Math.round((filled / MAX_SEATS) * 100);
 
@@ -253,7 +253,7 @@ const RegistrationSection = () => {
                 </span>
               ) : (
                 <span className={`font-mono text-sm font-bold ${seatsLeft <= 5 ? "text-red-400" : "text-primary"}`}>
-                  {seatsLeft} / {MAX_SEATS} left
+                  {seatsLeft} seats left
                   {seatsLeft <= 5 && (
                     <span className="ml-2 text-xs text-red-400 tracking-widest">⚠ LIMITED</span>
                   )}
