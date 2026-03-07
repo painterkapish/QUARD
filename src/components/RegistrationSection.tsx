@@ -32,7 +32,7 @@ const QR_IMAGES: Record<string, string> = {
   "FACULTY/Academicians": qr2000,
 };
 
-const terminalLines = [
+const staticTerminalLines = [
   {
     cmd: "sessions_count:",
     val: "8",
@@ -56,12 +56,6 @@ const terminalLines = [
     val: "ALL_REGISTERED_PARTICIPANTS",
     color: "text-primary",
     hint: "Open to everyone — technical or non-technical, all are welcome to compete",
-  },
-  {
-    cmd: "status:",
-    val: "OPEN_FOR_REGISTRATION",
-    color: "text-green-400",
-    hint: "Register now to secure your spot and your chance to win",
   },
 ];
 
@@ -112,6 +106,28 @@ const RegistrationSection = () => {
 
   // pct = how full the bar is (seats taken / total), animates from 0→filled
   const pct = seatsLeft === null ? 0 : Math.round(((MAX_SEATS - seatsLeft) / MAX_SEATS) * 100);
+
+  // Status line reacts to live seat count
+  const statusLine = {
+    cmd: "status:",
+    val: seatsLeft === null
+      ? "CHECKING..."
+      : seatsLeft === 0
+      ? "REGISTRATIONS_CLOSED"
+      : "OPEN_FOR_REGISTRATION",
+    color: seatsLeft === null
+      ? "text-muted-foreground"
+      : seatsLeft === 0
+      ? "text-red-400"
+      : "text-green-400",
+    hint: seatsLeft === null
+      ? "Checking registration status..."
+      : seatsLeft === 0
+      ? "All seats have been filled — registrations are now closed"
+      : "Register now to secure your spot and your chance to win",
+  };
+
+  const terminalLines = [...staticTerminalLines, statusLine];
 
   const safeFetch = async (url: string, options: RequestInit) => {
     const controller = new AbortController();
