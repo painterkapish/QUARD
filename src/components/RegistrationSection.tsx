@@ -268,9 +268,7 @@ const RegistrationSection = () => {
               />
             </div>
             {seatsLeft !== null && (
-              <p className="font-mono text-[10px] text-muted-foreground/50 mt-2 tracking-wider">
-                {filled} of {MAX_SEATS}
-              </p>
+              <p className="font-mono text-[10px] text-muted-foreground/50 mt-2 tracking-wider"></p>
             )}
           </motion.div>
 
